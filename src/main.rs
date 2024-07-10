@@ -60,8 +60,8 @@ fn get_request(mut stream: &TcpStream) -> Request {
     let version = req.next().unwrap();
     // Headers are separated by "\r\n" and ends with "\r\n\r\n"
     let req = request_str.lines().skip(1).next().unwrap().split("\r\n").collect::<Vec<&str>>();
-    let headers = req.next().unwrap();
-    let body = req.next().unwrap();
+    let headers = req[0];
+    let body = req[1];
 
     let request = Request {
         method: String::from(method),
