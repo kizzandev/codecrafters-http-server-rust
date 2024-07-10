@@ -182,7 +182,8 @@ fn handle_connection(mut stream: TcpStream) {
     if !accept_encoding.is_empty() && accept_encoding.contains("gzip") {
         handle_header(&mut response, "Content-Encoding: gzip");
         let mut enconder = GzEncoder::new(&mut compressed, Compression::default());
-        enconder.write_all(response.body.clone().as_bytes());
+        enconder.write_all(response.body.as_bytes()).unwrap();
+        encoder.finish().unwrap();
         let len = compressed.len();
         handle_header(&mut response, format!("Content-Length: {}", len).as_str());
         is_encoded = true;
@@ -193,12 +194,10 @@ fn handle_connection(mut stream: TcpStream) {
         "{}\r\n{}\r\n\r\n",
         response.status, response.headers
     );
-    let mut response_bytes;
+    let mut response_bytes = response_str.as_bytes().to_vec();;
     if is_encoded {
-        response_bytes = response_str.as_bytes().to_vec();
-        response_bytes.extend(compressed);
+        response_bytes.extend(&compressed);
     } else {
-        response_bytes = response_str.as_bytes().to_vec();
         response_bytes.extend(response.body.as_bytes());
     }
     let _ = stream.write_all(&response_bytes);
