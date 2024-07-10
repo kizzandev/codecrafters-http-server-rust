@@ -53,6 +53,7 @@ fn get_request(mut stream: &TcpStream) -> Request {
     let request_str = String::from_utf8_lossy(&buffer);
     let request_str = request_str.trim_end_matches('\0');
 
+    eprintln!("request_str: {}", request_str);
     let method = String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[0]);
     let uri = String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[1]);
     let version = String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[2]);
