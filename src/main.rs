@@ -53,11 +53,19 @@ fn get_request(mut stream: &TcpStream) -> Request {
     let request_str = request_str.trim_end_matches('\0');
 
     eprintln!("request_str: {}", request_str);
-    let method = String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[0]);
-    let uri = String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[1]);
-    let version = String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[2]);
+
+    let mut headers = request_str.lines().next().unwrap().split(' ');
+    let method = headers.next().unwrap();
+    let uri = headers.next().unwrap();
+    let version = headers.next().unwrap();
     let headers = String::from(request_str.lines().skip(1).collect::<Vec<&str>>().join("\r\n").trim());
     let body = String::from(request_str.lines().skip(2).collect::<Vec<&str>>().join("").trim());
+
+    // let method = String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[0]);
+    // let uri = String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[1]);
+    // let version = String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[2]);
+    // let headers = String::from(request_str.lines().skip(1).collect::<Vec<&str>>().join("\r\n").trim());
+    // let body = String::from(request_str.lines().skip(2).collect::<Vec<&str>>().join("").trim());
     
     let request = Request {
         method: String::from(method),
