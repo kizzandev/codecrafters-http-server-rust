@@ -1,6 +1,7 @@
 use std::net::{TcpListener, TcpStream};
 use std::io::{Read, Write};
 use std::{env, fs};
+use flate2::{Compression, write::GzEncoder};
 
 #[derive(Debug)]
 struct Response {
@@ -178,6 +179,12 @@ fn handle_connection(mut stream: TcpStream) {
     if request.headers.contains("Accept-Encoding:") {
         if request.headers.contains("gzip") {
             handle_header(&mut response, "Content-Encoding: gzip");
+            let mut encoder = GzEncoder::new(Vec::new(), Compression::default());
+            encoder.write_all(response.body.as_bytes()).unwrap();
+            let compressed = encoder.finish().unwrap();
+            response.body = String::from_utf8(compressed).unwrap();
+            let len = response.body.len();
+            handle_header(&mut response, format!("Content-Length: {}", len).as_str());
         }
     }
 
