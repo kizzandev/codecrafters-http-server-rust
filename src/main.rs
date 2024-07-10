@@ -59,7 +59,7 @@ fn get_request(mut stream: &TcpStream) -> Request {
     let uri = parts_of_request.next().unwrap();
     let version = parts_of_request.next().unwrap();
     // Headers are separated by "\r\n" and ends with "\r\n\r\n"
-    let headers = parts_of_request.next().unwrap_or_default();
+    let headers = parts_of_request.next().split("\r\n").next().unwrap_or_default();
     let body = parts_of_request.next().unwrap_or_default();
 
     let request = Request {
