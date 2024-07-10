@@ -86,6 +86,28 @@ impl Status {
     }
 }
 
+fn get_file(filename: &str) -> String {
+    let filename = filename.replace("/files/", "");
+    let dir = env_args.iter().position(|x| x == "--directory")
+                      .map(|x| env_args[x + 1].clone())
+                      .unwrap_or_default();
+
+    if dir.is_empty() {
+        Status::NotFound.to_string()
+    } else {
+        match fs::read_to_string(format!("{}/{}", dir, filename)) {
+            Ok(file_contents) => {
+                response.body = file_contents;
+                handle_header(&mut response, "Content-Type: application/octet-stream");
+                let len = response.body.len();
+                handle_header(&mut response, &format!("Content-Length: {}", len));
+                Status::Ok.to_string()
+            },
+            Err(_) => Status::NotFound.to_string(),
+        }    
+    }
+}
+
 fn handle_connection(mut stream: TcpStream) {
     let request = get_request(&stream);
 
@@ -118,24 +140,10 @@ fn handle_connection(mut stream: TcpStream) {
         },
         // Route: /files/{filename}
         filename if filename.starts_with("/files/") => {
-            let filename = filename.replace("/files/", "");
-            let dir = env_args.iter().position(|x| x == "--directory")
-                              .map(|x| env_args[x + 1].clone())
-                              .unwrap_or_default();
-
-            if dir.is_empty() {
-                Status::NotFound.to_string()
+            if request.method == "GET" {
+                get_file(filename.as_str())
             } else {
-                match fs::read_to_string(format!("{}/{}", dir, filename)) {
-                    Ok(file_contents) => {
-                        response.body = file_contents;
-                        handle_header(&mut response, "Content-Type: application/octet-stream");
-                        let len = response.body.len();
-                        handle_header(&mut response, &format!("Content-Length: {}", len));
-                        Status::Ok.to_string()
-                    },
-                    Err(_) => Status::NotFound.to_string(),
-                }    
+                Status::NotFound.to_string()
             }
         },
         _ => Status::NotFound.to_string(),
