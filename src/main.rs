@@ -9,6 +9,7 @@ struct Response {
 }
 
 #[derive(Debug)]
+#[allow(dead_code)]
 struct Request {
     method: String,
     uri: String,
@@ -76,25 +77,6 @@ fn get_request(mut stream: &TcpStream) -> Request {
 
     eprintln!("request:\n{:#?}", request);
     request
-
-    /*let mut req = request_str.lines().next().unwrap().split(' ');
-    let method = req.next().unwrap();
-    let uri = req.next().unwrap();
-    let version = req.next().unwrap();
-
-    let mut req = request_str.split("\r\n\r\n");
-    let headers = req.next().unwrap().split("\r\n").collect::<Vec<&str>>()[1..].join("\r\n");
-    let body = req.next().unwrap();
-
-    let request = Request {
-        method: String::from(method),
-        uri: String::from(uri),
-        version: String::from(version),
-        headers: String::from(headers),
-        body: String::from(body),
-    };
-    eprintln!("request:\n{:#?}", request);
-    request*/
 }
 
 enum Status {
