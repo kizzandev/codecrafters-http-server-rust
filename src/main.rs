@@ -49,6 +49,13 @@ fn get_request(mut stream: &TcpStream) -> Request {
     request
 }
 
+// enumerate all responses
+enum Status {
+    Ok = "HTTP/1.1 200 OK",
+    NotFound = "HTTP/1.1 404 Not Found",
+    Created = "HTTP/1.1 201 Created",
+}
+
 fn handle_connection(mut stream: TcpStream) {
     let request = get_request(&stream);
 
@@ -58,11 +65,11 @@ fn handle_connection(mut stream: TcpStream) {
         body: String::from(""),
     };
 
-    let ok = String::from("HTTP/1.1 200 OK");
-    let not_found = String::from("HTTP/1.1 404 Not Found");
+    // let ok = String::from("HTTP/1.1 200 OK");
+    // let not_found = String::from("HTTP/1.1 404 Not Found");
     
     response.status = match request.uri.as_str() {
-        "/" => ok,
+        "/" => Status::Ok,
         // Route: /echo/{str}
         echo_str if echo_str.starts_with("/echo/") => {
             let echo_str = echo_str.split('/').collect::<Vec<&str>>()[2];
@@ -72,7 +79,7 @@ fn handle_connection(mut stream: TcpStream) {
             handle_header(&mut response, format!("Content-Length: {}", len).as_str());
             ok
         }
-        _ => not_found
+        _ => Status::NotFound,
     };
 
     let response_str = format!("{}\r\n{}\r\n\r\n{}", response.status, response.headers, response.body);
