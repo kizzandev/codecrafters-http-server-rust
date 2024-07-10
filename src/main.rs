@@ -158,7 +158,7 @@ fn handle_connection(mut stream: TcpStream) {
             if request.method == "GET" {
                 get_file(&mut response, env_args, filename)
             } else {
-                Status::NotFound.to_string()
+                post_file(&mut response, env_args, filename)
             }
         },
         _ => Status::NotFound.to_string(),
