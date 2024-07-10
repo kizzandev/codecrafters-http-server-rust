@@ -116,7 +116,7 @@ fn post_file(request: &Request, mut response: &mut Response, env_args: Vec<Strin
     if dir.is_empty() {
         Status::NotFound.to_string()
     } else {
-        match fs::write(format!("{}/{}", dir, filename), &response.body) {
+        match fs::write(format!("{}/{}", dir, filename), &request.body) {
             Ok(_) => Status::Created.to_string(),
             Err(_) => Status::NotFound.to_string(),
         }    
