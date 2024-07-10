@@ -22,6 +22,8 @@ fn handle_header(response: &mut Response, header: &str) {
     let mut headers = Vec::new();
     if (binding.contains("\r\n")) {
         headers = binding.split("\r\n").collect::<Vec<&str>>();
+    } else {
+        headers = binding.split("\n").collect::<Vec<&str>>();
     }
 
     eprintln!("headers: {:?}", headers);
@@ -64,7 +66,7 @@ fn handle_connection(mut stream: TcpStream) {
     let ok = String::from("HTTP/1.1 200 OK\r\n");
     let not_found = String::from("HTTP/1.1 404 Not Found\r\n");
     
-    let status = match request.uri.as_str() {
+    response.status = match request.uri.as_str() {
         "/" => ok,
         // Route: /echo/{str}
         echo_str if echo_str.starts_with("/echo/") => {
@@ -72,18 +74,16 @@ fn handle_connection(mut stream: TcpStream) {
             response.body = String::from(echo_str);
             handle_header(&mut response, "Content-Type: text/plain");
             let len = response.body.len();
-            eprintln!("len: {}", len);
             handle_header(&mut response, format!("Content-Length: {}", len).as_str());
             ok
         }
         _ => not_found
     };
 
-    response.status = String::from(status);
-    response.body = String::from("");
+    
 
     let response_str = format!("{}{}{}\r\n\r\n", response.status, response.headers, response.body);
-    eprintln!("response: {}", response_str);
+    eprintln!("response:\n{}", response_str);
     stream.write(response_str.as_bytes()).unwrap();
 }
             
