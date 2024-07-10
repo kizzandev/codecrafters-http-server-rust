@@ -54,14 +54,13 @@ fn get_request(mut stream: &TcpStream) -> Request {
 
     eprintln!("request_str: {}", request_str);
 
-    let mut headers = request_str.lines().next().unwrap().split(' ');
-    let method = headers.next().unwrap();
-    let uri = headers.next().unwrap();
-    let version = headers.next().unwrap();
-
+    let mut parts_of_request = request_str.lines().next().unwrap().split(' ');
+    let method = parts_of_request.next().unwrap();
+    let uri = parts_of_request.next().unwrap();
+    let version = parts_of_request.next().unwrap();
     // Headers are separated by "\r\n" and ends with "\r\n\r\n"
-    let headers = request_str.lines().skip(1).collect::<Vec<&str>>().join("\r\n").trim();
-    let body = request_str.lines().skip(2).collect::<Vec<&str>>().join("").trim();
+    let headers = parts_of_request.next().unwrap();
+    let body = parts_of_request.next().unwrap();
 
     let request = Request {
         method: String::from(method),
