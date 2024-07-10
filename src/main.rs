@@ -25,15 +25,16 @@ fn handle_header(response: &mut Response, header: &str) {
     } else {
         headers.push(binding.as_str());
     }
+    eprintln!("headers post IF: {:?}", headers);
 
     if headers.contains(&header) {
         headers.retain(|&x| x != header);
     }
+    eprintln!("headers post RETAIN: {:?}", headers);
 
     headers.push(header);
 
     response.headers = headers.join("\r\n");
-    eprintln!("headers: |{}|", response.headers);
 }
 
 fn handle_connection(mut stream: TcpStream) {
