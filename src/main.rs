@@ -83,7 +83,7 @@ fn handle_connection(mut stream: TcpStream) {
 
     let response_str = format!("{}\r\n{}\r\n\r\n{}", response.status, response.headers, response.body);
     eprintln!("response:\n{}", response_str);
-    stream.write(response_str.as_bytes());
+    stream.write(response_str.as_bytes())
 }
             
 fn main() {
