@@ -30,7 +30,7 @@ fn handle_header(response: &mut Response, header: &str) {
     }
 
     if headers.contains(&header) {
-        headers.retain(|&x| x != header);
+        headers.retain(|&x| x.split(':').collect::<Vec<&str>>()[0] != header);
     }
 
     headers.push(header);
