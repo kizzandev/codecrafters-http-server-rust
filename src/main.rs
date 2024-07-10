@@ -1,6 +1,7 @@
 use std::net::{TcpListener, TcpStream};
 use std::io::{Read, Write};
 use std::{env, fs};
+use anyhow::bail;
 
 struct Response {
     status: String,
@@ -93,6 +94,8 @@ fn handle_connection(mut stream: TcpStream) {
         headers: String::from(""),
         body: String::from(""),
     };
+
+    let env_args = env::args().collect::<Vec<String>>();
     
     response.status = match request.uri.as_str() {
         "/" => Status::Ok.to_string(),
@@ -116,9 +119,15 @@ fn handle_connection(mut stream: TcpStream) {
         // Route: /files/{filename}
         filename if filename.starts_with("/files/") => {
             let filename = filename.replace("/files/", "");
-            let env_dir = env::current_dir().unwrap();
-            let file = fs::read_to_string(env_dir.join("/").join(filename)).unwrap();
-            response.body = String::from(file);
+
+            // flag --directory {directory}
+            let env_dir = env_args.iter().position(|x| x == "--directory");
+            let dir = match env_dir {
+                Some(x) => env_args[x + 1].clone(),
+                _ => bail!("no directory specified"),
+            }
+            let file_contents = fs::read_to_string(format!("{}{}", dir, filename)).unwrap();
+            response.body = String::from(file_contents);
             handle_header(&mut response, "Content-Type: application/octet-stream");
             let len = response.body.len();
             handle_header(&mut response, format!("Content-Length: {}", len).as_str());
