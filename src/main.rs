@@ -19,6 +19,7 @@ struct Request {
 
 fn handle_header(response: &mut Response, header: &str) {
     let binding = response.headers.clone();
+    eprintln!("binding: {}", binding);
     let mut headers = binding.split("\r\n").collect::<Vec<&str>>();
 
     eprintln!("headers: {:?}", headers);
@@ -66,10 +67,10 @@ fn handle_connection(mut stream: TcpStream) {
         // Route: /echo/{str}
         echo_str if echo_str.starts_with("/echo/") => {
             let echo_str = echo_str.split('/').collect::<Vec<&str>>()[2];
-            eprintln!("echo_str: {}", echo_str);
             response.body = String::from(echo_str);
             handle_header(&mut response, "Content-Type: text/plain");
             let len = response.body.len();
+            eprintln!("len: {}", len);
             handle_header(&mut response, format!("Content-Length: {}", len).as_str());
             ok
         }
