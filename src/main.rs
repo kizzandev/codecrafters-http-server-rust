@@ -108,7 +108,7 @@ fn get_file(mut response: &mut Response, env_args: Vec<String>, filename: &str) 
     }
 }
 
-fn post_file(mut response: &mut Response, env_args: Vec<String>, filename: &str) -> String {
+fn post_file(request: &Request, mut response: &mut Response, env_args: Vec<String>, filename: &str) -> String {
     let filename = filename.replace("/files/", "");
     let dir = env_args.iter().position(|x| x == "--directory")
                       .map(|x| env_args[x + 1].clone())
@@ -158,7 +158,7 @@ fn handle_connection(mut stream: TcpStream) {
             if request.method == "GET" {
                 get_file(&mut response, env_args, filename)
             } else {
-                post_file(&mut response, env_args, filename)
+                post_file(&request, &mut response, env_args, filename)
             }
         },
         _ => Status::NotFound.to_string(),
