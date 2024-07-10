@@ -183,16 +183,20 @@ fn handle_connection(mut stream: TcpStream) {
             let mut encoder = GzEncoder::new(Vec::new(), Compression::default());
             encoder.write_all(response.body.as_bytes()).unwrap();
             let compressed = encoder.finish().unwrap();
-            response.body = String::from_utf8(compressed).unwrap();
+            response.body = compressed; // Assign compressed bytes directly to response.body
             let len = response.body.len();
             handle_header(&mut response, &format!("Content-Length: {}", len));
             is_encoded = true;
         }
     }
 
-    let response_str = format!("{}\r\n{}\r\n\r\n{}", response.status, response.headers, response.body);
-    eprintln!("{:#?}", response);
-    let _ = stream.write(response_str.as_bytes());
+    let response_str = format!(
+        "{}\r\n{}\r\n\r\n",
+        response.status, response.headers
+    );
+    eprintln!("{:#?}", response); 
+    let _ = stream.write_all(response_str.as_bytes());
+    let _ = stream.write_all(&response.body);
 }
             
 fn main() {
