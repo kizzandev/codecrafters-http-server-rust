@@ -17,6 +17,18 @@ struct Request {
     body: String,
 }
 
+fn handle_header(mut response: &mut Response, header: &str) {
+    let mut headers = response.headers.clone().split("\r\n").collect::<Vec<&str>>();
+
+    if !headers.contains(&header) {
+        headers.push(header);
+    } else {
+        headers.retain(|&x| x != header);
+    }
+
+    response.headers = headers.join("\r\n");
+}
+
 fn handle_connection(mut stream: TcpStream) {
     let mut buffer = [0; 1024];
     stream.read(&mut buffer).unwrap();
@@ -53,6 +65,9 @@ fn handle_connection(mut stream: TcpStream) {
             let echo_str = echo_str.split('/').collect::<Vec<&str>>()[2];
             eprintln!("echo_str: {}", echo_str);
             response.body = String::from(echo_str);
+            handle_header(&mut response, "Content-Type: text/plain");
+            let len = response.body.len();
+            handle_header(&mut response, "Content-Length: " + &len.to_string());
             ok
         }
         _ => not_found
