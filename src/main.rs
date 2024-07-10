@@ -1,6 +1,6 @@
 use std::net::{TcpListener, TcpStream};
 use std::io::{Read, Write};
-use std::fmt;
+use std::fmt::{self, Display};
 
 struct Response {
     status: String,
@@ -55,15 +55,25 @@ enum Status {
     Created,
 }
 
-impl Status {
-    fn as_str(&self) -> String {
+impl Display for Status {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Status::Ok => String::from("HTTP/1.1 200 OK"),
-            Status::NotFound => String::from("HTTP/1.1 404 Not Found"),
-            Status::Created => String::from("HTTP/1.1 201 Created"),
+            Status::Ok => write!(f, "HTTP/1.1 200 OK"),
+            Status::NotFound => write!(f, "HTTP/1.1 404 Not Found"),
+            Status::Created => write!(f, "HTTP/1.1 201 Created"),
         }
     }
 }
+
+// impl Status {
+//     fn as_str(&self) -> String {
+//         match self {
+//             Status::Ok => String::from("HTTP/1.1 200 OK"),
+//             Status::NotFound => String::from("HTTP/1.1 404 Not Found"),
+//             Status::Created => String::from("HTTP/1.1 201 Created"),
+//         }
+//     }
+// }
 
 fn handle_connection(mut stream: TcpStream) {
     let request = get_request(&stream);
@@ -78,7 +88,7 @@ fn handle_connection(mut stream: TcpStream) {
     // let not_found = String::from("HTTP/1.1 404 Not Found");
     
     response.status = match request.uri.as_str() {
-        "/" => Status::Ok.as_str(),
+        "/" => Status::Ok,
         // Route: /echo/{str}
         echo_str if echo_str.starts_with("/echo/") => {
             let echo_str = echo_str.split('/').collect::<Vec<&str>>()[2];
@@ -86,9 +96,9 @@ fn handle_connection(mut stream: TcpStream) {
             handle_header(&mut response, "Content-Type: text/plain");
             let len = response.body.len();
             handle_header(&mut response, format!("Content-Length: {}", len).as_str());
-            Status::Ok.as_str()
+            Status::Ok
         }
-        _ => Status::NotFound.as_str(),
+        _ => Status::NotFound,
     };
 
     let response_str = format!("{}\r\n{}\r\n\r\n{}", response.status, response.headers, response.body);
