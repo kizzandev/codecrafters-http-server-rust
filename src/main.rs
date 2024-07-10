@@ -124,7 +124,7 @@ fn handle_connection(mut stream: TcpStream) {
             let env_dir = env_args.iter().position(|x| x == "--directory");
             let dir = match env_dir {
                 Some(x) => env_args[x + 1].clone(),
-                _ => ""
+                None => "".to_string(),
             };
             if dir == "" {
                 bail!("--directory flag is required");
