@@ -178,6 +178,7 @@ fn handle_connection(mut stream: TcpStream) {
     let mut is_encoded = false;
     let accept_encoding = get_header(&request, "Accept-Encoding");
     let mut compressed = Vec::new();
+
     if !accept_encoding.is_empty() && accept_encoding.contains("gzip") {
         handle_header(&mut response, "Content-Encoding: gzip");
         let mut encoder = GzEncoder::new(Vec::new(), Compression::default());
@@ -194,7 +195,11 @@ fn handle_connection(mut stream: TcpStream) {
     );
     eprintln!("{:#?}", response); 
     let _ = stream.write_all(response_str.as_bytes());
-    let _ = stream.write_all(&compressed);
+    if is_encoded {
+        let _ = stream.write_all(&compressed);
+    } else {
+        let _ = stream.write_all(response.body.as_bytes());
+    }
 }
             
 fn main() {
