@@ -79,7 +79,7 @@ fn handle_connection(mut stream: TcpStream) {
         _ => not_found
     };
 
-    let mut response_str = String::from("{}\r\n\r\n{}", response.status, response.body);
+    let mut response_str = String::from(format!("{}\r\n\r\n{}", response.status, response.body));
     if response.headers != "" {
         response_str = format!("{}\r\n{}\r\n\r\n{}", response.status, response.headers, response.body);
     }
