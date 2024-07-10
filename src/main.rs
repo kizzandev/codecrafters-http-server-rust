@@ -55,6 +55,7 @@ fn get_request(mut stream: &TcpStream) -> Request {
         headers: String::from(request_str.lines().skip(1).collect::<Vec<&str>>().join("\n")),
         body: String::from(request_str.lines().skip(2).collect::<Vec<&str>>().join("\n")),
     };
+    eprintln!("request:\n{:#?}", request);
     request
 }
 
