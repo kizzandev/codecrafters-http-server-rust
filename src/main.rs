@@ -42,16 +42,19 @@ fn handle_connection(mut stream: TcpStream) {
         headers: String::from(""),
         body: String::from(""),
     };
+
+    let ok = String::from("HTTP/1.1 200 OK");
+    let not_found = String::from("HTTP/1.1 404 Not Found");
     
     let status = match request.uri.as_str() {
-        "/" => "HTTP/1.1 200 OK",
+        "/" => ok,
         // Route: /echo/{str}
         echo_str if echo_str.starts_with("/echo/") => {
             let echo_str = echo_str.split('/').collect::<Vec<&str>>()[2];
             eprintln!("echo_str: {}", echo_str);
-            echo_str
+            ok + echo_str
         }
-        _ => "HTTP/1.1 404 Not Found"
+        _ => not_found
     };
 
     response.status = String::from(status);
