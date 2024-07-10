@@ -60,7 +60,7 @@ fn get_request(mut stream: &TcpStream) -> Request {
     let version = req.next().unwrap();
 
     let mut req = request_str.split("\r\n\r\n");
-    let headers = &req.next().unwrap()[1..];
+    let headers = &req.next().unwrap().split("\r\n").collect::<Vec<&str>>()[1..];
     let body = req.next().unwrap();
 
     let request = Request {
