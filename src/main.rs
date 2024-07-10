@@ -125,16 +125,16 @@ fn handle_connection(mut stream: TcpStream) {
 
             if dir.is_empty() {
                 Status::NotFound.to_string()
-            };
-
-            match fs::read_to_string(format!("{}/{}", dir, filename)) {
-                Ok(file_contents) => {
-                    response.body = file_contents;
-                    handle_header(&mut response, "Content-Type: text/plain");
-                    handle_header(&mut response, &format!("Content-Length: {}", response.body.len()));
-                    Status::Ok.to_string()
-                },
-                Err(_) => Status::NotFound.to_string(),
+            } else {
+                match fs::read_to_string(format!("{}/{}", dir, filename)) {
+                    Ok(file_contents) => {
+                        response.body = file_contents;
+                        handle_header(&mut response, "Content-Type: text/plain");
+                        handle_header(&mut response, &format!("Content-Length: {}", response.body.len()));
+                        Status::Ok.to_string()
+                    },
+                    Err(_) => Status::NotFound.to_string(),
+                }    
             }
         },
         _ => Status::NotFound.to_string(),
