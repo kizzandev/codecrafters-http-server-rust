@@ -16,6 +16,12 @@ struct Request {
     body: String,
 }
 
+impl std::fmt::Debug for Request {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "method: {}\nuri: {}\nversion: {}\nheaders: {}\nbody: {}", self.method, self.uri, self.version, self.headers, self.body)
+    }
+}
+
 fn handle_header(response: &mut Response, header: &str) {
     let binding = response.headers.clone();
     let mut headers = Vec::new();
@@ -53,8 +59,8 @@ fn get_request(mut stream: &TcpStream) -> Request {
         method: String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[0]),
         uri: String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[1]),
         version: String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[2]),
-        headers: String::from(request_str.lines().skip(1).collect::<Vec<&str>>().join("\n")),
-        body: String::from(request_str.lines().skip(2).collect::<Vec<&str>>().join("\n")),
+        headers: String::from(request_str.lines().skip(1).collect::<Vec<&str>>().join("\n").trim()),
+        body: String::from(request_str.lines().skip(2).collect::<Vec<&str>>().join("\n").trim()),
     };
     eprintln!("request:\n{:#?}", request);
     request
