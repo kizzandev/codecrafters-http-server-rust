@@ -108,6 +108,23 @@ fn get_file(mut response: &mut Response, env_args: Vec<String>, filename: &str) 
     }
 }
 
+fn post_file(mut response: &mut Response, env_args: Vec<String>, filename: &str) -> String {
+    let filename = filename.replace("/files/", "");
+    let dir = env_args.iter().position(|x| x == "--directory")
+                      .map(|x| env_args[x + 1].clone())
+                      .unwrap_or_default();
+    if dir.is_empty() {
+        Status::NotFound.to_string()
+    } else {
+        match fs::write(format!("{}/{}", dir, filename), &response.body) {
+            Ok(_) => {
+                Status::Created.to_string()
+            },
+            Err(_) => Status::NotFound.to_string(),
+        }    
+    }
+}
+
 fn handle_connection(mut stream: TcpStream) {
     let request = get_request(&stream);
 
