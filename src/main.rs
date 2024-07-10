@@ -34,14 +34,14 @@ fn handle_header(response: &mut Response, header: &str) {
 }
 
 fn get_header(request: &Request, header: &str) -> String {
-    let mut headers = Vec::new();
     if request.headers.contains("\r\n") {
-        headers = request.headers.split("\r\n").collect::<Vec<&str>>();
-    } else if request.headers != "" {
-        headers.push(request.headers.as_str());
+        let headers = request.headers.split("\r\n").collect::<Vec<&str>>();
+        headers.iter().find(|&x| x.contains(header)).unwrap().split(':').collect::<Vec<&str>>()[1].trim().to_string()
+    } else if request.headers.contains(header) {
+        header.split(':').collect::<Vec<&str>>()[1].trim().to_string()
+    } else {
+        "".to_string();
     }
-
-    headers.iter().find(|&x| x.contains(header)).unwrap().split(':').collect::<Vec<&str>>()[1].trim().to_string()
 }
 
 fn get_request(mut stream: &TcpStream) -> Request {
