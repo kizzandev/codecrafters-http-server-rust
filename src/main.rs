@@ -35,7 +35,7 @@ fn handle_header(response: &mut Response, header: &str) {
     response.headers = headers.join("\r\n");
 }
 
-fn get_request(stream: &TcpStream) -> Request {
+fn get_request(mut stream: &TcpStream) -> Request {
     let mut buffer = [0; 1024];
     stream.read(&mut buffer).unwrap();
     let request_str = String::from_utf8_lossy(&buffer);
