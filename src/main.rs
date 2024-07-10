@@ -67,7 +67,7 @@ fn handle_connection(mut stream: TcpStream) {
             response.body = String::from(echo_str);
             handle_header(&mut response, "Content-Type: text/plain");
             let len = response.body.len();
-            handle_header(&mut response, "Content-Length: ".to_owned() + &len.to_string());
+            handle_header(&mut response, "Content-Length: ".to_owned() + &len);
             ok
         }
         _ => not_found
