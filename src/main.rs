@@ -34,7 +34,7 @@ fn handle_connection(mut stream: TcpStream) {
     let mut buffer = [0; 1024];
     stream.read(&mut buffer).unwrap();
     let request_str = String::from_utf8_lossy(&buffer);
-    eprintln!("request: {}", request_str);
+    // eprintln!("request: {}", request_str);
 
     let method = request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[0];
     let uri = request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[1];
@@ -64,7 +64,6 @@ fn handle_connection(mut stream: TcpStream) {
         // Route: /echo/{str}
         echo_str if echo_str.starts_with("/echo/") => {
             let echo_str = echo_str.split('/').collect::<Vec<&str>>()[2];
-            eprintln!("echo_str: {}", echo_str);
             response.body = String::from(echo_str);
             handle_header(&mut response, "Content-Type: text/plain");
             let len = response.body.len();
@@ -79,6 +78,7 @@ fn handle_connection(mut stream: TcpStream) {
     response.body = String::from("");
 
     let response_str = format!("{}\r\n{}\r\n{}\r\n\r\n", response.status, response.headers, response.body);
+    eprintln!("response: {}", response_str);
     stream.write(response_str.as_bytes()).unwrap();
 }
             
