@@ -86,7 +86,7 @@ impl Status {
     }
 }
 
-fn get_file(filename: &str) -> String {
+fn get_file(&response: &mut Response, filename: &str) -> String {
     let filename = filename.replace("/files/", "");
     let dir = env_args.iter().position(|x| x == "--directory")
                       .map(|x| env_args[x + 1].clone())
@@ -141,7 +141,7 @@ fn handle_connection(mut stream: TcpStream) {
         // Route: /files/{filename}
         filename if filename.starts_with("/files/") => {
             if request.method == "GET" {
-                get_file(filename)
+                get_file(&mut response, filename)
             } else {
                 Status::NotFound.to_string()
             }
