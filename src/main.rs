@@ -35,7 +35,7 @@ fn main() {
                 };
 
                 // Extract method from _stream
-                eprintln("The _stream is:\n{:?}", _stream);
+                eprintln!("The _stream is:\n{:?}", _stream);
 
 
                 // let status = match request.uri.as_str() {
