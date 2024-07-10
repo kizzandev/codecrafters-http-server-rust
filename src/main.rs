@@ -62,8 +62,8 @@ fn handle_connection(mut stream: TcpStream) {
         body: String::from(""),
     };
 
-    let ok = String::from("HTTP/1.1 200 OK\r\n");
-    let not_found = String::from("HTTP/1.1 404 Not Found\r\n");
+    let ok = String::from("HTTP/1.1 200 OK");
+    let not_found = String::from("HTTP/1.1 404 Not Found");
     
     response.status = match request.uri.as_str() {
         "/" => ok,
@@ -72,8 +72,7 @@ fn handle_connection(mut stream: TcpStream) {
             let echo_str = echo_str.split('/').collect::<Vec<&str>>()[2];
             response.body = String::from(echo_str);
             handle_header(&mut response, "Content-Type: text/plain");
-            let len = response.body.len();
-            handle_header(&mut response, format!("Content-Length: {}", len).as_str());
+            handle_header(&mut response, format!("Content-Length: {}", response.body.len()).as_str());
             ok
         }
         _ => not_found
@@ -81,9 +80,9 @@ fn handle_connection(mut stream: TcpStream) {
 
     
 
-    let response_str = format!("{}{}\r\n\r\n{}", response.status, response.headers, response.body);
+    let response_str = format!("{}\r\n{}\r\n\r\n{}", response.status, response.headers, response.body);
     eprintln!("response:\n{}", response_str);
-    stream.write(response_str.as_bytes()).unwrap();
+    stream.write(response_str.as_bytes());
 }
             
 fn main() {
