@@ -1,19 +1,19 @@
 use std::net::TcpListener;
 use std::io::Write;
 
-struct Response {
-    status: String,
-    headers: String,
-    body: String,
-}
+// struct Response {
+//     status: String,
+//     headers: String,
+//     body: String,
+// }
 
-struct Request {
-    method: String,
-    uri: String,
-    version: String,
-    headers: String,
-    body: String,
-}
+// struct Request {
+//     method: String,
+//     uri: String,
+//     version: String,
+//     headers: String,
+//     body: String,
+// }
 
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:4221").unwrap();
@@ -25,13 +25,13 @@ fn main() {
 
 
                 // Extract METHOD, URI, HTTP version, headers, and body
-                let mut request = Request {
-                    method: String::from(""),
-                    uri: String::from(""),
-                    version: String::from(""),
-                    headers: String::from(""),
-                    body: String::from(""),
-                };
+                // let mut request = Request {
+                //     method: String::from(""),
+                //     uri: String::from(""),
+                //     version: String::from(""),
+                //     headers: String::from(""),
+                //     body: String::from(""),
+                // };
 
                 // Extract method from _stream
                 eprintln!("The _stream is:\n{:?}", _stream);
