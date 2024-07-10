@@ -1,5 +1,6 @@
 use std::net::{TcpListener, TcpStream};
 use std::io::{Read, Write};
+use std::{env, fs};
 
 struct Response {
     status: String,
@@ -108,6 +109,17 @@ fn handle_connection(mut stream: TcpStream) {
             let echo_str = echo_str.split('/').collect::<Vec<&str>>()[2];
             response.body = String::from(echo_str);
             handle_header(&mut response, "Content-Type: text/plain");
+            let len = response.body.len();
+            handle_header(&mut response, format!("Content-Length: {}", len).as_str());
+            Status::Ok.to_string()
+        },
+        // Route: /files/{filename}
+        filename if filename.starts_with("/files/") => {
+            let filename = filename.replace("/files/", "");
+            let env_dir = env::current_dir().unwrap();
+            let file = fs::read_to_string(env_dir.join(filename)).unwrap();
+            response.body = String::from(file);
+            handle_header(&mut response, "Content-Type: application/octet-stream");
             let len = response.body.len();
             handle_header(&mut response, format!("Content-Length: {}", len).as_str());
             Status::Ok.to_string()
