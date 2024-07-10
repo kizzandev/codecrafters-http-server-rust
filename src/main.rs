@@ -201,7 +201,7 @@ fn handle_connection(mut stream: TcpStream) {
         response_bytes = response_str.as_bytes().to_vec();
         response_bytes.extend(response.body.as_bytes());
     }
-    let _ = stream.write_all(response_bytes);
+    let _ = stream.write_all(&response_bytes);
 }
             
 fn main() {
