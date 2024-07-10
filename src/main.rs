@@ -72,7 +72,8 @@ fn handle_connection(mut stream: TcpStream) {
             let echo_str = echo_str.split('/').collect::<Vec<&str>>()[2];
             response.body = String::from(echo_str);
             handle_header(&mut response, "Content-Type: text/plain");
-            handle_header(&mut response, format!("Content-Length: {}", &response.body.len()).as_str());
+            let len = response.body.len();
+            handle_header(&mut response, format!("Content-Length: {}", len).as_str());
             ok
         }
         _ => not_found
