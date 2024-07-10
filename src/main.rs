@@ -33,7 +33,7 @@ fn handle_header(response: &mut Response, header: &str) {
     headers.push(header);
 
     response.headers = headers.join("\r\n");
-    // eprintln!("headers: {}", response.headers);
+    eprintln!("headers: |{}|", response.headers);
 }
 
 fn handle_connection(mut stream: TcpStream) {
