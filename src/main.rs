@@ -48,7 +48,7 @@ fn handle_connection(mut stream: TcpStream) {
     let headers = request_str.lines().skip(1).collect::<Vec<&str>>().join("\n");
     let body = request_str.lines().skip(2).collect::<Vec<&str>>().join("\n");
     
-    const request = Request {
+    const request: Request = Request {
         method: String::from(method),
         uri: String::from(uri),
         version: String::from(version),
