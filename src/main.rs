@@ -117,7 +117,7 @@ fn handle_connection(mut stream: TcpStream) {
         filename if filename.starts_with("/files/") => {
             let filename = filename.replace("/files/", "");
             let env_dir = env::current_dir().unwrap();
-            let file = fs::read_to_string(env_dir.join(filename)).unwrap();
+            let file = fs::read_to_string(env_dir.join("/").join(filename)).unwrap();
             response.body = String::from(file);
             handle_header(&mut response, "Content-Type: application/octet-stream");
             let len = response.body.len();
