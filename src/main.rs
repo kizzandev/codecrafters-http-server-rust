@@ -21,6 +21,8 @@ fn handle_header(response: &mut Response, header: &str) {
     let binding = response.headers.clone();
     let mut headers = binding.split("\r\n").collect::<Vec<&str>>();
 
+    eprintln!("headers: {:?}", headers);
+
     if headers.contains(&header) {
         headers.retain(|&x| x != header);
     }
