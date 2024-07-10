@@ -175,16 +175,18 @@ fn handle_connection(mut stream: TcpStream) {
         _ => Status::NotFound.to_string(),
     };
 
-    // Check if request has the "Accept-Encoding: gzip" header
-    if request.headers.contains("Accept-Encoding:") {
-        if request.headers.contains("gzip") {
+    let mut isEncoded = false;
+    
+    if let Some(accept_encoding) = request.headers.get("Accept-Encoding") {
+        if accept_encoding.contains("gzip") {
             handle_header(&mut response, "Content-Encoding: gzip");
             let mut encoder = GzEncoder::new(Vec::new(), Compression::default());
             encoder.write_all(response.body.as_bytes()).unwrap();
             let compressed = encoder.finish().unwrap();
             response.body = String::from_utf8(compressed).unwrap();
             let len = response.body.len();
-            handle_header(&mut response, format!("Content-Length: {}", len).as_str());
+            handle_header(&mut response, &format!("Content-Length: {}", len));
+            is_encoded = true;
         }
     }
 
