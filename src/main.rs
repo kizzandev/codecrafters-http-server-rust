@@ -47,7 +47,7 @@ fn handle_connection(mut stream: TcpStream) {
     let status = match request.uri.as_str() {
         "/" => "HTTP/1.1 200 OK\r\n\r\n",
         _ => "HTTP/1.1 404 Not Found\r\n\r\n"
-    }
+    };
 
     response.status = String::from(status);
     response.headers = String::from(request.headers);
