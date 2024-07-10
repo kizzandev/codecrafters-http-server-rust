@@ -125,16 +125,19 @@ fn handle_connection(mut stream: TcpStream) {
             let dir = if let Some(x) = env_dir {
                 env_args[x + 1].clone()
             } else {
-                bail!("Missing --directory argument");
                 "".to_string()
             };
 
-            let file_contents = fs::read_to_string(format!("{}{}", dir, filename)).unwrap();
-            response.body = String::from(file_contents);
-            handle_header(&mut response, "Content-Type: application/octet-stream");
-            let len = response.body.len();
-            handle_header(&mut response, format!("Content-Length: {}", len).as_str());
-            Status::Ok.to_string()
+            if dir == "" {
+                Status::NotFound.to_string()
+            } else {
+                let file_contents = fs::read_to_string(format!("{}{}", dir, filename)).unwrap();
+                response.body = String::from(file_contents);
+                handle_header(&mut response, "Content-Type: application/octet-stream");
+                let len = response.body.len();
+                handle_header(&mut response, format!("Content-Length: {}", len).as_str());
+                Status::Ok.to_string()
+            }
         },
         _ => Status::NotFound.to_string(),
     };
