@@ -35,25 +35,23 @@ fn handle_header(response: &mut Response, header: &str) {
     response.headers = headers.join("\r\n");
 }
 
-fn handle_connection(mut stream: TcpStream) {
+fn get_request(stream: TcpStream) -> Request {
     let mut buffer = [0; 1024];
     stream.read(&mut buffer).unwrap();
     let request_str = String::from_utf8_lossy(&buffer);
-    // eprintln!("request: {}", request_str);
-
-    let method = request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[0];
-    let uri = request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[1];
-    let version = request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[2];
-    let headers = request_str.lines().skip(1).collect::<Vec<&str>>().join("\n");
-    let body = request_str.lines().skip(2).collect::<Vec<&str>>().join("\n");
-    
     let request = Request {
-        method: String::from(method),
-        uri: String::from(uri),
-        version: String::from(version),
-        headers: String::from(headers),
-        body: String::from(body),
+        method: String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[0]),
+        uri: String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[1]),
+        version: String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[2]),
+        headers: String::from(request_str.lines().skip(1).collect::<Vec<&str>>().join("\n")),
+        body: String::from(request_str.lines().skip(2).collect::<Vec<&str>>().join("\n")),
     };
+    request
+}
+
+fn handle_connection(mut stream: TcpStream) {
+    let request = get_request(stream);
+    eprintln!("request:\n{}", request);
 
     let mut response = Response {
         status: String::from(""),
