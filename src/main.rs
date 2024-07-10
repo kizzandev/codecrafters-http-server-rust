@@ -40,7 +40,7 @@ fn get_header(request: &Request, header: &str) -> String {
     } else if request.headers.contains(header) {
         header.split(':').collect::<Vec<&str>>()[1].trim().to_string()
     } else {
-        "".to_string();
+        "".to_string()
     }
 }
 
