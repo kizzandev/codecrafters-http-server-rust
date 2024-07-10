@@ -49,12 +49,20 @@ fn get_request(mut stream: &TcpStream) -> Request {
     let mut buffer = [0; 1024];
     stream.read(&mut buffer).unwrap();
     let request_str = String::from_utf8_lossy(&buffer);
+    let request_str = request_str.trim_end_matches('\0');
+
+    let method = String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[0]);
+    let uri: String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[1]),
+    let version: String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[2]),
+    let headers: String::from(request_str.lines().skip(1).collect::<Vec<&str>>().join("\n").trim()),
+    let body: String::from(request_str.lines().skip(2).collect::<Vec<&str>>().join("\n").trim()),
+    
     let request = Request {
-        method: String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[0]),
-        uri: String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[1]),
-        version: String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[2]),
-        headers: String::from(request_str.lines().skip(1).collect::<Vec<&str>>().join("\n").trim()),
-        body: String::from(request_str.lines().skip(2).collect::<Vec<&str>>().join("\n").trim()),
+        method: String::from(method),
+        uri: String::from(uri),
+        version: String::from(version),
+        headers: String::from(headers),
+        body: String::from(body),
     };
     eprintln!("request:\n{:#?}", request);
     request
