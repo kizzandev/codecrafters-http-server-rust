@@ -54,7 +54,7 @@ fn handle_connection(mut stream: TcpStream) {
 
     let mut response = Response {
         status: String::from(""),
-        headers: String::from(""),
+        headers: String::from(request.headers),
         body: String::from(""),
     };
 
@@ -76,7 +76,6 @@ fn handle_connection(mut stream: TcpStream) {
     };
 
     response.status = String::from(status);
-    response.headers = String::from(request.headers);
     response.body = String::from("");
 
     let response_str = format!("{}\r\n{}\r\n{}\r\n\r\n", response.status, response.headers, response.body);
