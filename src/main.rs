@@ -52,7 +52,8 @@ fn handle_connection(mut stream: TcpStream) {
         echo_str if echo_str.starts_with("/echo/") => {
             let echo_str = echo_str.split('/').collect::<Vec<&str>>()[2];
             eprintln!("echo_str: {}", echo_str);
-            ok + echo_str
+            response.body = String::from(echo_str);
+            ok
         }
         _ => not_found
     };
