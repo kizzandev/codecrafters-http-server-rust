@@ -59,7 +59,7 @@ fn get_request(mut stream: &TcpStream) -> Request {
     let uri = req.next().unwrap();
     let version = req.next().unwrap();
     // Headers are separated by "\r\n" and ends with "\r\n\r\n". Then we get the body
-    eprintln!("req: {}", req);
+    eprintln!("req: {}", request_str);
     let headers = String::from("");
     let body = String::from("");
 
