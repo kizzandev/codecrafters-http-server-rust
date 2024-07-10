@@ -120,24 +120,22 @@ fn handle_connection(mut stream: TcpStream) {
         // Route: /files/{filename}
         filename if filename.starts_with("/files/") => {
             let filename = filename.replace("/files/", "");
+            let dir = env_args.iter().position(|x| x == "--directory")
+                              .map(|x| env_args[x + 1].clone())
+                              .unwrap_or_default();
 
-            // flag --directory {directory}
-            let env_dir = env_args.iter().position(|x| x == "--directory");
-            let dir = if let Some(x) = env_dir {
-                env_args[x + 1].clone()
-            } else {
-                "".to_string()
-            };
+            if dir.is_empty() {
+                return Status::NotFound.to_string();
+            }
 
-            return if dir == "" {
-                Status::NotFound.to_string()
-            } else {
-                let file_contents = fs::read_to_string(format!("{}/{}", dir, filename)).unwrap();
-                response.body = String::from(file_contents);
-                handle_header(&mut response, "Content-Type: application/octet-stream");
-                let len = response.body.len();
-                handle_header(&mut response, format!("Content-Length: {}", len).as_str());
-                Status::Ok.to_string()
+            match fs::read_to_string(format!("{}/{}", dir, filename)) {
+                Ok(file_contents) => {
+                    response.body = file_contents;
+                    handle_header(&mut response, "Content-Type: text/plain");
+                    handle_header(&mut response, format!("Content-Length: {}", response.body.len()));
+                    Status::Ok.to_string()
+                },
+                Err(_) => Status::NotFound.to_string(),
             }
         },
         _ => Status::NotFound.to_string(),
