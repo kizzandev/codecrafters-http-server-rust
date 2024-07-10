@@ -126,7 +126,7 @@ fn handle_connection(mut stream: TcpStream) {
             } else {
                 "".to_string()
             };
-            if dir == "" {
+            return if dir == "" {
                 Status::NotFound.to_string()
             }
 
