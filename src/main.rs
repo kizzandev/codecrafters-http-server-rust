@@ -175,8 +175,8 @@ fn handle_connection(mut stream: TcpStream) {
         _ => Status::NotFound.to_string(),
     };
 
-    let mut isEncoded = false;
-    
+    let mut is_encoded = false;
+
     if let Some(accept_encoding) = request.headers.get("Accept-Encoding") {
         if accept_encoding.contains("gzip") {
             handle_header(&mut response, "Content-Encoding: gzip");
