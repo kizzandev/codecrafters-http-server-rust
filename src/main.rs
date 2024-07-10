@@ -130,7 +130,8 @@ fn handle_connection(mut stream: TcpStream) {
                     Ok(file_contents) => {
                         response.body = file_contents;
                         handle_header(&mut response, "Content-Type: text/plain");
-                        handle_header(&mut response, &format!("Content-Length: {}", &response.body.len()));
+                        let len = response.body.len();
+                        handle_header(&mut response, &format!("Content-Length: {}", len));
                         Status::Ok.to_string()
                     },
                     Err(_) => Status::NotFound.to_string(),
