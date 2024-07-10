@@ -38,7 +38,7 @@ fn get_header(request: &Request, header: &str) -> String {
         let headers = request.headers.split("\r\n").collect::<Vec<&str>>();
         headers.iter().find(|&x| x.contains(header)).unwrap().split(':').collect::<Vec<&str>>()[1].trim().to_string()
     } else if request.headers.contains(header) {
-        header.split(':').collect::<Vec<&str>>()[1].trim().to_string()
+        request.headers.split(':').collect::<Vec<&str>>()[1].trim().to_string()
     } else {
         "".to_string()
     }
