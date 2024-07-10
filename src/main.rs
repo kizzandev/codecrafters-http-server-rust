@@ -188,17 +188,18 @@ fn handle_connection(mut stream: TcpStream) {
         is_encoded = true;
     }
 
+    eprintln!("{:#?}", response);
     let response_str = format!(
         "{}\r\n{}\r\n\r\n",
         response.status, response.headers
     );
-    eprintln!("{:#?}", response);
-    let _ = stream.write_all(response_str.as_bytes());
+    let mut response_bytes = response_str.as_bytes();
     if is_encoded {
-        let _ = stream.write_all(&compressed);
+        response_bytes.extend_from_slice(&compressed);
     } else {
-        let _ = stream.write_all(response.body.as_bytes());
+        response_bytes.extend_from_slice(response.body.as_bytes());
     }
+    let _ = stream.write_all(response_bytes);
 }
             
 fn main() {
