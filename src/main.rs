@@ -1,7 +1,6 @@
 use std::net::{TcpListener, TcpStream};
 use std::io::{Read, Write};
 use std::{env, fs};
-use anyhow::bail;
 
 struct Response {
     status: String,
@@ -125,7 +124,7 @@ fn handle_connection(mut stream: TcpStream) {
                               .unwrap_or_default();
 
             if dir.is_empty() {
-                return Status::NotFound.to_string();
+                Status::NotFound.to_string()
             }
 
             match fs::read_to_string(format!("{}/{}", dir, filename)) {
