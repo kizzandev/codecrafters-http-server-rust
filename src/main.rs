@@ -19,7 +19,7 @@ struct Request {
 
 fn handle_header(response: &mut Response, header: &str) {
     let binding = response.headers.clone();
-    let mut headers;
+    let mut headers = Vec::new();
     if (binding.contains("\r\n")) {
         headers = binding.split("\r\n").collect::<Vec<&str>>();
     }
