@@ -20,6 +20,7 @@ struct Request {
 fn handle_header(response: &mut Response, header: &str) {
     let binding = response.headers.clone();
     let mut headers = Vec::new();
+    eprintln!("headers pre IF: {:?}", headers);
     if binding.contains("\r\n") {
         headers = binding.split("\r\n").collect::<Vec<&str>>();
     } else {
