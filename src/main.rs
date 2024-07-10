@@ -178,7 +178,7 @@ fn handle_connection(mut stream: TcpStream) {
     let mut is_encoded = false;
     let accept_encoding = get_header(&request, "Accept-Encoding");
     let mut compressed = Vec::new();
-    if (!accept_encoding.empty() && accept_encoding.contains("gzip")) {
+    if !accept_encoding.is_empty() && accept_encoding.contains("gzip") {
         handle_header(&mut response, "Content-Encoding: gzip");
         let mut encoder = GzEncoder::new(Vec::new(), Compression::default());
         encoder.write_all(response.body.as_bytes()).unwrap();
