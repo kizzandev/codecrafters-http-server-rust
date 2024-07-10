@@ -128,7 +128,7 @@ fn handle_connection(mut stream: TcpStream) {
                 "".to_string()
             };
             if dir == "" {
-                bail!("--directory flag is required");
+                Status::NotFound.to_string()
             }
             let file_contents = fs::read_to_string(format!("{}{}", dir, filename)).unwrap();
             response.body = String::from(file_contents);
