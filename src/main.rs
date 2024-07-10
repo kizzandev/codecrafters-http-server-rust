@@ -6,7 +6,7 @@ fn main() {
     
     for stream in listener.incoming() {
         match stream {
-            Ok(mut _stream) => {
+            Ok(_stream) => {
                 eprintln!("accepted new connection");
 
                 _stream.write(b"HTTP/1.1 200 OK\r\n\r\n");
