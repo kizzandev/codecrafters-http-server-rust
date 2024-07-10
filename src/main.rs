@@ -51,20 +51,20 @@ fn get_request(mut stream: &TcpStream) -> Request {
 
 // enumerate all responses
 enum Status {
-    Ok,
-    NotFound,
-    Created,
+    Ok("HTTP/1.1 200 OK"),
+    NotFound("HTTP/1.1 404 Not Found"),
+    Created("HTTP/1.1 201 Created"),
 }
 
-impl Status {
-    fn as_str(&self) -> &'static str {
-        match self {
-            Status::Ok => "HTTP/1.1 200 OK",
-            Status::NotFound => "HTTP/1.1 404 Not Found",
-            Status::Created => "HTTP/1.1 201 Created",
-        }
-    }
-}
+// impl Status {
+//     fn as_str(&self) -> &'static str {
+//         match self {
+//             Status::Ok => "HTTP/1.1 200 OK",
+//             Status::NotFound => "HTTP/1.1 404 Not Found",
+//             Status::Created => "HTTP/1.1 201 Created",
+//         }
+//     }
+// }
 
 fn handle_connection(mut stream: TcpStream) {
     let request = get_request(&stream);
@@ -79,7 +79,7 @@ fn handle_connection(mut stream: TcpStream) {
     // let not_found = String::from("HTTP/1.1 404 Not Found");
     
     response.status = match request.uri.as_str() {
-        "/" => Status::Ok.to_string(),
+        "/" => Status::Ok,
         // Route: /echo/{str}
         echo_str if echo_str.starts_with("/echo/") => {
             let echo_str = echo_str.split('/').collect::<Vec<&str>>()[2];
@@ -89,7 +89,7 @@ fn handle_connection(mut stream: TcpStream) {
             handle_header(&mut response, format!("Content-Length: {}", len).as_str());
             ok
         }
-        _ => Status::NotFound.to_string(),
+        _ => Status::NotFound,
     };
 
     let response_str = format!("{}\r\n{}\r\n\r\n{}", response.status, response.headers, response.body);
