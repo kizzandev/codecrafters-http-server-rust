@@ -7,18 +7,13 @@ struct Response {
     body: String,
 }
 
+#[derive(Debug)]
 struct Request {
     method: String,
     uri: String,
     version: String,
     headers: String,
     body: String,
-}
-
-impl std::fmt::Debug for Request {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "method: {}, uri: {}, version: {}, headers: {}, body: {}", self.method, self.uri, self.version, self.headers, self.body)
-    }
 }
 
 fn handle_header(response: &mut Response, header: &str) {
