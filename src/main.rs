@@ -19,8 +19,10 @@ struct Request {
 
 fn handle_header(response: &mut Response, header: &str) {
     let binding = response.headers.clone();
-    eprintln!("binding: {}", binding);
-    let mut headers = binding.split("\r\n").collect::<Vec<&str>>();
+    let mut headers;
+    if (binding.contains("\r\n")) {
+        headers = binding.split("\r\n").collect::<Vec<&str>>();
+    }
 
     eprintln!("headers: {:?}", headers);
 
