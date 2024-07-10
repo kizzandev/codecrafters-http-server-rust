@@ -77,8 +77,8 @@ fn handle_connection(mut stream: TcpStream) {
         // Route: /user-agent
         "/user-agent" => {
             handle_header(&mut response, "Content-Type: text/plain");
-            let user_agent = request.headers.split("\r\n").collect::<Vec<&str>>().iter().find(|&x| x.contains("User-Agent")).unwrap();
-            response.body = String::from(user_agent);
+            let user_agent = request.headers.split("\r\n").collect::<Vec<&str>>().iter().find(|&x| x.contains("User-Agent")).unwrap().split(':').collect::<Vec<&str>>()[1];
+            response.body = String::from(user_agent.trim());
             let len = response.body.len();
             handle_header(&mut response, format!("Content-Length: {}", len).as_str());
             Status::Ok.to_string()
