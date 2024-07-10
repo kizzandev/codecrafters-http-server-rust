@@ -33,6 +33,17 @@ fn handle_header(response: &mut Response, header: &str) {
     response.headers = headers.join("\r\n");
 }
 
+fn get_header(request: &Request, header: &str) -> String {
+    let mut headers = Vec::new();
+    if request.headers.contains("\r\n") {
+        headers = request.headers.split("\r\n").collect::<Vec<&str>>();
+    } else if request.headers != "" {
+        headers.push(request.headers.as_str());
+    }
+
+    headers.iter().find(|&x| x.contains(header)).unwrap().split(':').collect::<Vec<&str>>()[1].trim().to_string()
+}
+
 fn get_request(mut stream: &TcpStream) -> Request {
     let mut buffer = [0; 1024];
     stream.read(&mut buffer).unwrap();
@@ -77,7 +88,7 @@ fn handle_connection(mut stream: TcpStream) {
         // Route: /user-agent
         "/user-agent" => {
             handle_header(&mut response, "Content-Type: text/plain");
-            let user_agent = request.headers.split("\r\n").collect::<Vec<&str>>().iter().find(|&x| x.contains("User-Agent")).unwrap().split(':').collect::<Vec<&str>>()[1];
+            let user_agent = get_header(&request, "User-Agent");
             response.body = String::from(user_agent.trim());
             let len = response.body.len();
             handle_header(&mut response, format!("Content-Length: {}", len).as_str());
