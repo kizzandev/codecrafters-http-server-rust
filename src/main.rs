@@ -59,9 +59,9 @@ enum Status {
 impl Status {
     fn as_str(&self) -> String {
         match self {
-            Status::Ok => "HTTP/1.1 200 OK",
-            Status::NotFound => "HTTP/1.1 404 Not Found",
-            Status::Created => "HTTP/1.1 201 Created",
+            Status::Ok => String::from("HTTP/1.1 200 OK"),
+            Status::NotFound => String::from("HTTP/1.1 404 Not Found"),
+            Status::Created => String::from("HTTP/1.1 201 Created"),
         }
     }
 }
@@ -87,7 +87,7 @@ fn handle_connection(mut stream: TcpStream) {
             handle_header(&mut response, "Content-Type: text/plain");
             let len = response.body.len();
             handle_header(&mut response, format!("Content-Length: {}", len).as_str());
-            ok
+            Status::Ok.as_str()
         }
         _ => Status::NotFound.as_str(),
     };
