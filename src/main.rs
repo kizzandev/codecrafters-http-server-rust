@@ -81,7 +81,7 @@ fn handle_connection(mut stream: TcpStream) {
 
     let mut response_str = String::from(format!("{}\r\n\r\n{}", response.status, response.body));
     if response.headers != "" {
-        response_str = format!("{}\r\n{}\r\n\r\n{}", response.status, response.headers, response.body);
+        response_str = format!("{}{}\r\n\r\n{}", response.status, response.headers, response.body);
     }
 
     eprintln!("response:\n{}", response_str);
