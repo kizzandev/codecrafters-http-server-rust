@@ -59,7 +59,7 @@ fn handle_connection(mut stream: TcpStream) {
 
     let mut response = Response {
         status: String::from(""),
-        headers: String::from(request.headers),
+        headers: String::from(""),
         body: String::from(""),
     };
 
