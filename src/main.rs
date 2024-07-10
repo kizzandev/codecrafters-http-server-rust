@@ -80,10 +80,8 @@ fn handle_connection(mut stream: TcpStream) {
     };
 
     let mut response_str = String::from("");
-    if response.status == not_found {
-        response_str = format!("{}\r\n\r\n", not_found);
-    } else if response.status == ok && response.headers == "" {
-        response_str = format!("{}\r\n\r\n{}", ok, response.body);
+    if response.headers == "" {
+        response_str = format!("{}\r\n\r\n{}", response.status, response.body);
     } else {
         response_str = format!("{}\r\n{}\r\n\r\n{}", response.status, response.headers, response.body);
     }
