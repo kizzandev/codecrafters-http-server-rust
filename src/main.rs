@@ -17,8 +17,9 @@ struct Request {
     body: String,
 }
 
-fn handle_header(mut response: &mut Response, header: &str) {
-    let mut headers = response.headers.clone().split("\r\n").collect::<Vec<&str>>();
+fn handle_header(response: &mut Response, header: &str) {
+    let binding = response.headers.clone();
+    let mut headers = binding.split("\r\n").collect::<Vec<&str>>();
 
     if !headers.contains(&header) {
         headers.push(header);
