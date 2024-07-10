@@ -23,7 +23,6 @@ fn handle_connection(mut stream: TcpStream) {
     let request_str = String::from_utf8_lossy(&buffer);
     eprintln!("request: {}", request_str);
 
-    // The string must start with a method (e.g. GET)
     let method = request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[0];
     let uri = request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[1];
     let version = request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[2];
@@ -46,6 +45,11 @@ fn handle_connection(mut stream: TcpStream) {
     
     let status = match request.uri.as_str() {
         "/" => "HTTP/1.1 200 OK\r\n\r\n",
+        // Route: /echo/{str}
+        echo_str if echo_str.starts_with("/echo/") => {
+            let echo_str = echo_str.split('/').collect::<Vec<&str>>()[1];
+            format!("HTTP/1.1 200 OK\r\n\r\n{}", echo_str)
+        }
         _ => "HTTP/1.1 404 Not Found\r\n\r\n"
     };
 
