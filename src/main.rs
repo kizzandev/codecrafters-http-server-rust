@@ -16,12 +16,6 @@ struct Request {
     body: String,
 }
 
-impl std::fmt::Debug for Request {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "method: {}\nuri: {}\nversion: {}\nheaders: {}\nbody: {}", self.method, self.uri, self.version, self.headers, self.body)
-    }
-}
-
 fn handle_header(response: &mut Response, header: &str) {
     let binding = response.headers.clone();
     let mut headers = Vec::new();
