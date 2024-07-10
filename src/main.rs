@@ -23,7 +23,7 @@ fn handle_header(response: &mut Response, header: &str) {
     if (binding.contains("\r\n")) {
         headers = binding.split("\r\n").collect::<Vec<&str>>();
     } else {
-        headers = binding.split("\n").collect::<Vec<&str>>();
+        headers.push(binding.as_str());
     }
 
     eprintln!("headers: {:?}", headers);
