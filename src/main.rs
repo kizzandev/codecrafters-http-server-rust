@@ -129,7 +129,7 @@ fn handle_connection(mut stream: TcpStream) {
                 "".to_string()
             };
 
-            if dir == "" {
+            return if dir == "" {
                 Status::NotFound.to_string()
             } else {
                 let file_contents = fs::read_to_string(format!("{}/{}", dir, filename)).unwrap();
