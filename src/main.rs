@@ -23,7 +23,6 @@ fn main() {
             Ok(mut _stream) => {
                 eprintln!("accepted new connection");
 
-                // _stream.write(b"HTTP/1.1 200 OK\r\n\r\n");
 
                 // Extract METHOD, URI, HTTP version, headers, and body
                 let mut request = Request {
@@ -46,6 +45,8 @@ fn main() {
                 //         "HTTP/1.1 404 Not Found\r\n\r\n"
                 //     }
                 // }
+
+                _stream.write(b"HTTP/1.1 200 OK\r\n\r\n");
             }
             Err(e) => {
                 eprintln!("error: {}", e);
