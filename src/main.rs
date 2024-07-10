@@ -33,7 +33,6 @@ fn handle_header(response: &mut Response, header: &str) {
     headers.push(header);
 
     response.headers = headers.join("\r\n");
-    response.headers = format!("{}\r\n", response.headers);
 }
 
 fn handle_connection(mut stream: TcpStream) {
@@ -81,7 +80,7 @@ fn handle_connection(mut stream: TcpStream) {
 
     
 
-    let response_str = format!("{}{}{}\r\n\r\n", response.status, response.headers, response.body);
+    let response_str = format!("{}{}\r\n{}\r\n\r\n", response.status, response.headers, response.body);
     eprintln!("response:\n{}", response_str);
     stream.write(response_str.as_bytes()).unwrap();
 }
