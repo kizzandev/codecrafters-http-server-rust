@@ -20,18 +20,15 @@ struct Request {
 fn handle_header(response: &mut Response, header: &str) {
     let binding = response.headers.clone();
     let mut headers = Vec::new();
-    eprintln!("headers pre IF: {:?}", headers);
     if binding.contains("\r\n") {
         headers = binding.split("\r\n").collect::<Vec<&str>>();
-    } else {
+    } else if binding != "" {
         headers.push(binding.as_str());
     }
-    eprintln!("headers post IF: {:?}", headers);
 
     if headers.contains(&header) {
         headers.retain(|&x| x != header);
     }
-    eprintln!("headers post RETAIN: {:?}", headers);
 
     headers.push(header);
 
