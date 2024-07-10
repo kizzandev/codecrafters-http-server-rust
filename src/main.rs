@@ -95,7 +95,6 @@ fn handle_connection(mut stream: TcpStream) {
     
     response.status = match request.uri.as_str() {
         "/" => Status::Ok.to_string(),
-        // Route: /user-agent
         "/user-agent" => {
             handle_header(&mut response, "Content-Type: text/plain");
             let user_agent = get_header(&request, "User-Agent");
