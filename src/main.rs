@@ -174,6 +174,14 @@ fn handle_connection(mut stream: TcpStream) {
         _ => Status::NotFound.to_string(),
     };
 
+    // Check if request has the "Accept-Encoding: gzip" header
+    if request.headers.contains("Accept-Encoding: gzip") {
+        let mut encoder = flate2::write::GzEncoder::new(Vec::new(), flate2::Compression::default());
+        encoder.write_all(response.body.as_bytes()).unwrap();
+        response.body = String::from_utf8(encoder.finish().unwrap()).unwrap();
+        handle_header(&mut response, "Content-Encoding: gzip");
+    }
+
     let response_str = format!("{}\r\n{}\r\n\r\n{}", response.status, response.headers, response.body);
     eprintln!("{:#?}", response);
     let _ = stream.write(response_str.as_bytes());
