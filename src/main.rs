@@ -20,7 +20,7 @@ struct Request {
 fn handle_header(response: &mut Response, header: &str) {
     let binding = response.headers.clone();
     let mut headers = Vec::new();
-    if (binding.contains("\r\n")) {
+    if binding.contains("\r\n") {
         headers = binding.split("\r\n").collect::<Vec<&str>>();
     } else {
         headers.push(binding.as_str());
@@ -79,9 +79,15 @@ fn handle_connection(mut stream: TcpStream) {
         _ => not_found
     };
 
-    
+    let response_str = String::from("");
+    if response.status == not_found {
+        response_str = format!("{}\r\n\r\n")
+    } else if response.status == ok && response.headers == "" {
+        response_str = format!("{}\r\n\r\n{}", response.status, response.body);
+    } else {
+        response_str = format!("{}\r\n{}\r\n\r\n{}", response.status, response.headers, response.body);
+    }
 
-    let response_str = format!("{}\r\n{}\r\n\r\n{}", response.status, response.headers, response.body);
     eprintln!("response:\n{}", response_str);
     let _ = stream.write(response_str.as_bytes());
 }
