@@ -57,7 +57,7 @@ enum Status {
 }
 
 impl Status {
-    fn as_str(&self) -> &str {
+    fn as_str(&self) -> String {
         match self {
             Status::Ok => "HTTP/1.1 200 OK",
             Status::NotFound => "HTTP/1.1 404 Not Found",
