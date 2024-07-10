@@ -86,7 +86,7 @@ impl Status {
     }
 }
 
-fn get_file(&response: &mut Response, filename: &str) -> String {
+fn get_file(response: &mut Response, filename: &str) -> String {
     let filename = filename.replace("/files/", "");
     let dir = env_args.iter().position(|x| x == "--directory")
                       .map(|x| env_args[x + 1].clone())
