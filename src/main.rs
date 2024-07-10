@@ -78,7 +78,7 @@ fn handle_connection(mut stream: TcpStream) {
         _ => not_found
     };
 
-    let response_str = format!("{}\r\n{}\r\n\r\n{}", response.status, response.headers.trim(), response.body);
+    let response_str = format!("{}\r\n{}\r\n\r\n{}", response.status, response.headers, response.body);
     eprintln!("response:\n{}", response_str);
     let _ = stream.write(response_str.as_bytes());
 }
