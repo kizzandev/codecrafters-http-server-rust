@@ -50,7 +50,7 @@ fn get_request(stream: &TcpStream) -> Request {
 }
 
 fn handle_connection(mut stream: TcpStream) {
-    let request = get_request(stream);
+    let request = get_request(&stream);
 
     let mut response = Response {
         status: String::from(""),
