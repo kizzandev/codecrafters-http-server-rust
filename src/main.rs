@@ -1,7 +1,7 @@
 use std::net::{TcpListener, TcpStream};
 use std::io::{Read, Write};
 use std::{env, fs};
-use anyhow::{bail, Error};
+use anyhow::bail;
 
 struct Response {
     status: String,
@@ -124,8 +124,11 @@ fn handle_connection(mut stream: TcpStream) {
             let env_dir = env_args.iter().position(|x| x == "--directory");
             let dir = match env_dir {
                 Some(x) => env_args[x + 1].clone(),
-                _ => Error::new(1, "missing --directory argument").to_string(),
+                _ => ""
             };
+            if dir == "" {
+                bail!("--directory flag is required");
+            }
             let file_contents = fs::read_to_string(format!("{}{}", dir, filename)).unwrap();
             response.body = String::from(file_contents);
             handle_header(&mut response, "Content-Type: application/octet-stream");
