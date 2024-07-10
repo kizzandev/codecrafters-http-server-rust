@@ -176,13 +176,8 @@ fn handle_connection(mut stream: TcpStream) {
 
     // Check if request has the "Accept-Encoding: gzip" header
     if request.headers.contains("Accept-Encoding:") {
-        match request.headers.split("Accept-Encoding: ").collect::<Vec<&str>>()[1].split(',').collect::<Vec<&str>>()[0] {
-            "gzip" => {
-                handle_header(&mut response, "Content-Encoding: gzip");
-                // let len = response.body.len();
-                // handle_header(&mut response, format!("Content-Length: {}", len).as_str());
-            },
-            _ => {}
+        if request.headers.contains("gzip") {
+            handle_header(&mut response, "Content-Encoding: gzip");
         }
     }
 
