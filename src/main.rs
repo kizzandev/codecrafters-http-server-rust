@@ -141,7 +141,7 @@ fn handle_connection(mut stream: TcpStream) {
         // Route: /files/{filename}
         filename if filename.starts_with("/files/") => {
             if request.method == "GET" {
-                get_file(filename.as_str())
+                get_file(filename)
             } else {
                 Status::NotFound.to_string()
             }
