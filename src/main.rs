@@ -52,9 +52,32 @@ fn get_request(mut stream: &TcpStream) -> Request {
     let request_str = String::from_utf8_lossy(&buffer);
     let request_str = request_str.trim_end_matches('\0');
 
-    eprintln!("request_str: {}", request_str);
+    let mut lines = request_str.lines();
 
-    let mut req = request_str.lines().next().unwrap().split(' ');
+    let (method, uri, version) = {
+        let mut req_line = lines.next().unwrap().split(' ');
+        (req_line.next().unwrap(), req_line.next().unwrap(), req_line.next().unwrap())
+    };
+
+    let (headers, body) = {
+        let mut req_parts = request_str.split("\r\n\r\n");
+        (req_parts.next().unwrap(), req_parts.next().unwrap_or(""))
+    };
+
+    let headers = headers.lines().skip(1).collect::<Vec<&str>>().join("\r\n");
+
+    let request = Request {
+        method: method.to_string(),
+        uri: uri.to_string(),
+        version: version.to_string(),
+        headers: headers,
+        body: body.to_string(),
+    };
+
+    eprintln!("request:\n{:#?}", request);
+    request
+
+    /*let mut req = request_str.lines().next().unwrap().split(' ');
     let method = req.next().unwrap();
     let uri = req.next().unwrap();
     let version = req.next().unwrap();
@@ -71,7 +94,7 @@ fn get_request(mut stream: &TcpStream) -> Request {
         body: String::from(body),
     };
     eprintln!("request:\n{:#?}", request);
-    request
+    request*/
 }
 
 enum Status {
