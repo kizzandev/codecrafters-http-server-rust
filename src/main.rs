@@ -1,7 +1,6 @@
 use std::net::{TcpListener, TcpStream};
 use std::io::{Read, Write};
 use std::{env, fs};
-use anyhow::bail;
 
 struct Response {
     status: String,
@@ -127,7 +126,8 @@ fn handle_connection(mut stream: TcpStream) {
             } else {
                 "".to_string()
             };
-            Status::NotFound.to_string() if dir == ""
+            Status::NotFound.to_string() if dir == "" else {}
+            
             let file_contents = fs::read_to_string(format!("{}{}", dir, filename)).unwrap();
             response.body = String::from(file_contents);
             handle_header(&mut response, "Content-Type: application/octet-stream");
