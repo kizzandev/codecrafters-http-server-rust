@@ -124,7 +124,7 @@ fn handle_connection(mut stream: TcpStream) {
                               .unwrap_or_default();
 
             if dir.is_empty() {
-                Status::NotFound.to_string()
+                return Status::NotFound.to_string();
             };
 
             match fs::read_to_string(format!("{}/{}", dir, filename)) {
