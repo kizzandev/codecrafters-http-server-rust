@@ -51,9 +51,19 @@ fn get_request(mut stream: &TcpStream) -> Request {
 
 // enumerate all responses
 enum Status {
-    Ok = "HTTP/1.1 200 OK",
-    NotFound = "HTTP/1.1 404 Not Found",
-    Created = "HTTP/1.1 201 Created",
+    Ok,
+    NotFound,
+    Created,
+}
+
+impl Status {
+    fn as_str(&self) -> &'static str {
+        match self {
+            Status::Ok => "HTTP/1.1 200 OK",
+            Status::NotFound => "HTTP/1.1 404 Not Found",
+            Status::Created => "HTTP/1.1 201 Created",
+        }
+    }
 }
 
 fn handle_connection(mut stream: TcpStream) {
