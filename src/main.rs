@@ -1,7 +1,6 @@
-use std::net::TcpListener;
-use std::net::TcpStream;
-use std::io::Write;
-use std::io::Read;
+use std::net::{TcpListener, TcpStream}
+use std::io::{Read, Write}
+use std::fmt;
 
 struct Response {
     status: String,
