@@ -44,21 +44,21 @@ fn handle_connection(mut stream: TcpStream) {
     };
     
     let status = match request.uri.as_str() {
-        "/" => "HTTP/1.1 200 OK\r\n\r\n",
+        "/" => "HTTP/1.1 200 OK",
         // Route: /echo/{str}
         echo_str if echo_str.starts_with("/echo/") => {
             let echo_str = echo_str.split('/').collect::<Vec<&str>>()[2];
             eprintln!("echo_str: {}", echo_str);
             echo_str
         }
-        _ => "HTTP/1.1 404 Not Found\r\n\r\n"
+        _ => "HTTP/1.1 404 Not Found"
     };
 
     response.status = String::from(status);
     response.headers = String::from(request.headers);
     response.body = String::from("");
 
-    let response_str = format!("{}{}{}", response.status, response.headers, response.body);
+    let response_str = format!("{}\r\n{}\r\n{}", response.status, response.headers, response.body);
     stream.write(response_str.as_bytes()).unwrap();
 }
             
