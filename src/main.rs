@@ -193,10 +193,12 @@ fn handle_connection(mut stream: TcpStream) {
         "{}\r\n{}\r\n\r\n",
         response.status, response.headers
     );
-    let mut response_bytes = response_str.as_bytes();
+    let mut response_bytes;
     if is_encoded {
-        response_bytes.extend(&compressed);
+        response_bytes = response_str.as_bytes().to_vec();
+        response_bytes.extend(compressed);
     } else {
+        response_bytes = response_str.as_bytes().to_vec();
         response_bytes.extend(response.body.as_bytes());
     }
     let _ = stream.write_all(response_bytes);
