@@ -74,6 +74,15 @@ fn handle_connection(mut stream: TcpStream) {
     
     response.status = match request.uri.as_str() {
         "/" => Status::Ok.to_string(),
+        // Route: /user-agent
+        "/user-agent" => {
+            handle_header(&mut response, "Content-Type: text/plain");
+            let user_agent = request.headers.split("\r\n").collect::<Vec<&str>>().iter().find(|&x| x.contains("User-Agent")).unwrap();
+            response.body = String::from(user_agent);
+            let len = response.body.len();
+            handle_header(&mut response, format!("Content-Length: {}", len).as_str());
+            Status::Ok.to_string()
+        },
         // Route: /echo/{str}
         echo_str if echo_str.starts_with("/echo/") => {
             let echo_str = echo_str.split('/').collect::<Vec<&str>>()[2];
@@ -82,7 +91,7 @@ fn handle_connection(mut stream: TcpStream) {
             let len = response.body.len();
             handle_header(&mut response, format!("Content-Length: {}", len).as_str());
             Status::Ok.to_string()
-        }
+        },
         _ => Status::NotFound.to_string(),
     };
 
