@@ -48,7 +48,7 @@ fn handle_connection(mut stream: TcpStream) {
         // Route: /echo/{str}
         echo_str if echo_str.starts_with("/echo/") => {
             let echo_str = echo_str.split('/').collect::<Vec<&str>>()[1];
-            String::from(format!("HTTP/1.1 200 OK\r\n\r\n{}", echo_str))
+            echo_str
         }
         _ => "HTTP/1.1 404 Not Found\r\n\r\n"
     };
