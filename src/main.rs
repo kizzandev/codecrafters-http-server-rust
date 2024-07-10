@@ -132,7 +132,7 @@ fn handle_connection(mut stream: TcpStream) {
             if dir == "" {
                 Status::NotFound.to_string()
             } else {
-                let file_contents = fs::read_to_string(format!("{}{}", dir, filename)).unwrap();
+                let file_contents = fs::read_to_string(format!("{}/{}", dir, filename)).unwrap();
                 response.body = String::from(file_contents);
                 handle_header(&mut response, "Content-Type: application/octet-stream");
                 let len = response.body.len();
