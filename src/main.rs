@@ -3,11 +3,11 @@ use std::net::TcpStream;
 use std::io::Write;
 use std::io::Read;
 
-// struct Response {
-//     status: String,
-//     headers: String,
-//     body: String,
-// }
+struct Response {
+    status: String,
+    headers: String,
+    body: String,
+}
 
 struct Request {
     method: String,
@@ -38,21 +38,23 @@ fn handle_connection(mut stream: TcpStream) {
         body: String::from(body),
     };
 
-    eprintln!("method: {}", request.method);
-    eprintln!("uri: {}", request.uri);
-    eprintln!("version: {}", request.version);
-    eprintln!("headers: {}", request.headers);
-    eprintln!("body: {}", request.body);
+    let mut response = Response {
+        status: String::from(""),
+        headers: String::from(""),
+        body: String::from(""),
+    };
     
-    // let status = match request.uri.as_str() {
-    //     Some(uri) => {
-    //         "HTTP/1.1 200 OK\r\n\r\n"
-    //     },
-    //     None => {
-    //         "HTTP/1.1 404 Not Found\r\n\r\n"
-    //     }
-    // }
-    let _ = stream.write(b"HTTP/1.1 404 Not Found\r\n\r\n");
+    let status = match request.uri.as_str() {
+        "/" => "HTTP/1.1 200 OK\r\n\r\n",
+        _ => "HTTP/1.1 404 Not Found\r\n\r\n"
+    }
+
+    response.status = String::from(status);
+    response.headers = String::from(request.headers);
+    response.body = String::from("");
+
+    let response_str = format!("{}{}{}", response.status, response.headers, response.body);
+    stream.write(response_str.as_bytes()).unwrap();
 }
             
 fn main() {
