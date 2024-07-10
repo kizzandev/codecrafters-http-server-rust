@@ -21,11 +21,11 @@ fn handle_header(response: &mut Response, header: &str) {
     let binding = response.headers.clone();
     let mut headers = binding.split("\r\n").collect::<Vec<&str>>();
 
-    if !headers.contains(&header) {
-        headers.push(header);
-    } else {
+    if headers.contains(&header) {
         headers.retain(|&x| x != header);
     }
+
+    headers.push(header);
 
     response.headers = headers.join("\r\n");
 }
