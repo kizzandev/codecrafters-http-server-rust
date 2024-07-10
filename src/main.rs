@@ -54,8 +54,8 @@ fn get_request(mut stream: &TcpStream) -> Request {
     let method = String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[0]);
     let uri = String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[1]);
     let version = String::from(request_str.lines().next().unwrap().split(' ').collect::<Vec<&str>>()[2]);
-    let headers = String::from(request_str.lines().skip(1).collect::<Vec<&str>>().join("\n").trim());
-    let body = String::from(request_str.lines().skip(2).collect::<Vec<&str>>().join("\n").trim());
+    let headers = String::from(request_str.lines().skip(1).collect::<Vec<&str>>().join("\r\n").trim());
+    let body = String::from(request_str.lines().skip(2).collect::<Vec<&str>>().join("").trim());
     
     let request = Request {
         method: String::from(method),
