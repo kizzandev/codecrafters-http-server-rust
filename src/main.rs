@@ -2,6 +2,7 @@ use std::net::{TcpListener, TcpStream};
 use std::io::{Read, Write};
 use std::{env, fs};
 
+#[derive(Debug)]
 struct Response {
     status: String,
     headers: String,
@@ -75,7 +76,7 @@ fn get_request(mut stream: &TcpStream) -> Request {
         body: body.to_string(),
     };
 
-    eprintln!("request:\n{:#?}", request);
+    eprintln!("{:#?}", request);
     request
 }
 
@@ -174,7 +175,7 @@ fn handle_connection(mut stream: TcpStream) {
     };
 
     let response_str = format!("{}\r\n{}\r\n\r\n{}", response.status, response.headers, response.body);
-    eprintln!("response:\n{}", response_str);
+    eprintln!("{:#?}", response);
     let _ = stream.write(response_str.as_bytes());
 }
             
