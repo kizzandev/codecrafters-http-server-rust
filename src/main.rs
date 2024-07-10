@@ -61,6 +61,7 @@ fn get_request(mut stream: &TcpStream) -> Request {
     // Headers are separated by "\r\n" and ends with "\r\n\r\n". Then we get the body
     let req = request_str.lines().skip(1).next().unwrap().split("\r\n");
     let headers = req.clone().collect::<Vec<&str>>().join("\r\n");
+    eprintln!("headers:\n{}", headers);
     let body = req.skip(1).collect::<Vec<&str>>().join("\r\n");
 
     let request = Request {
