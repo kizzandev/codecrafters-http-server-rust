@@ -1,6 +1,7 @@
 use std::net::{TcpListener, TcpStream};
 use std::io::{Read, Write};
 use std::{env, fs};
+use anyhow::bail;
 
 struct Response {
     status: String,
@@ -124,10 +125,8 @@ fn handle_connection(mut stream: TcpStream) {
             let dir = if let Some(x) = env_dir {
                 env_args[x + 1].clone()
             } else {
+                bail!("Missing --directory argument");
                 "".to_string()
-            };
-            return if dir == "" {
-                Status::NotFound.to_string()
             };
 
             let file_contents = fs::read_to_string(format!("{}{}", dir, filename)).unwrap();
