@@ -46,7 +46,7 @@ fn handle_connection(mut stream: TcpStream) {
     let status = match request.uri.as_str() {
         "/" => "HTTP/1.1 200 OK\r\n\r\n",
         // Route: /echo/{str}
-        echo_str if echo_str.starts_with("/echo/") => {
+        echo_str if request.uri.starts_with("/echo/") => {
             let echo_str = echo_str.split('/').collect::<Vec<&str>>()[1];
             echo_str
         }
