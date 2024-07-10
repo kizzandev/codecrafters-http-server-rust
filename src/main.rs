@@ -22,7 +22,7 @@ fn handle_connection(mut stream: TcpStream) {
     stream.read(&mut buffer).unwrap();
     eprintln!("request: {}", String::from_utf8_lossy(&buffer));
 
-    let _ = _stream.write(b"HTTP/1.1 404 Not Found\r\n\r\n");
+    let _ = stream.write(b"HTTP/1.1 404 Not Found\r\n\r\n");
 
     
     // let mut request = Request {
