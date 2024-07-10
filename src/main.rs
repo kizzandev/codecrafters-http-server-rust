@@ -184,7 +184,7 @@ fn handle_connection(mut stream: TcpStream) {
         let body = response.body.clone().as_bytes();
         GzEncoder::new(&mut compressed, Compression::default()).write_all(body);
         let len = compressed.len();
-        handle_header(&mut response, format!("Content-Length: {}", len));
+        handle_header(&mut response, format!("Content-Length: {}", len).as_str());
         is_encoded = true;
     }
 
