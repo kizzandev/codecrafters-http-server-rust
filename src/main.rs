@@ -21,21 +21,18 @@ struct Request {
 }
 
 fn handle_header(response: &mut Response, header: &str) {
-    let binding = response.headers.clone();
-    let mut headers = Vec::new();
-    if binding.contains("\r\n") {
-        headers = binding.split("\r\n").collect::<Vec<&str>>();
-    } else if binding != "" {
-        headers.push(binding.as_str());
-    }
-
-    if headers.contains(&header) {
-        headers.retain(|&x| x != header);
-    }
-
-    headers.push(header);
+    let mut headers = response.headers.split("\r\n")
+                                       .filter(|&x| x != header)
+                                       .collect::<Vec<&str>>();
 
     response.headers = headers.join("\r\n");
+
+    if !response.headers.contains(header) {
+        if !response.headers.is_empty() {
+            response.headers.push_str("\r\n");
+        }
+        response.headers.push_str(header);
+    }
 }
 
 fn get_header(request: &Request, header: &str) -> String {
