@@ -203,7 +203,7 @@ fn handle_connection(mut stream: TcpStream) {
     } else {
         response_bytes.extend_from_slice(response.body.as_bytes());
     }
-    let _ = stream.write_all(&response_bytes).expect("Failed to write to stream");
+    let _ = stream.write_all(&response_bytes.as_slice()).expect("Failed to write to stream");
 }
             
 fn main() {
