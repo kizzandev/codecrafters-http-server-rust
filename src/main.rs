@@ -197,13 +197,17 @@ fn handle_connection(mut stream: TcpStream) {
         "{}\r\n{}\r\n\r\n",
         response.status, response.headers
     );
-    let mut response_bytes = response_str.as_bytes().to_vec();
+    let mut buffer = Vec::new();
+    buffer.write_all(response_str.as_bytes()).expect("Failed to write to buffer");
+    // let mut response_bytes = response_str.as_bytes().to_vec();
     if is_encoded {
-        response_bytes.extend_from_slice(&compressed);
+        // response_bytes.extend_from_slice(&compressed);
+        buffer.write_all(&compressed).expect("Failed to write to buffer");
     } else {
-        response_bytes.extend_from_slice(response.body.as_bytes());
+        // response_bytes.extend_from_slice(response.body.as_bytes());
+        buffer.write_all(response.body.as_bytes()).expect("Failed to write to buffer");
     }
-    let _ = stream.write_all(&response_bytes.as_slice()).expect("Failed to write to stream");
+    let _ = stream.write_all(&buffer).expect("Failed to write to stream");
 }
             
 fn main() {
