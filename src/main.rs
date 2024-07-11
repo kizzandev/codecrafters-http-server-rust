@@ -199,9 +199,9 @@ fn handle_connection(mut stream: TcpStream) {
     );
     let mut response_bytes = response_str.as_bytes();
     if is_encoded {
-        response_bytes.extend_from_slice(&compressed);
+        response_bytes.extend(&compressed);
     } else {
-        response_bytes.extend_from_slice(response.body.as_bytes());
+        response_bytes.extend(response.body.as_bytes());
     }
     let _ = stream.write_all(&response_bytes).expect("Failed to write to stream");;
 }
