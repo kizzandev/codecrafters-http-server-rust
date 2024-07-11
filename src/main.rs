@@ -64,10 +64,10 @@ fn get_request(mut stream: &TcpStream) -> Request {
         if let (Some(method), Some(uri), Some(version)) = (parts.next(), parts.next(), parts.next()) {
             (method, uri, version)
         } else {
-            default_request()
+            ("", "", "")
         }
     } else {
-        default_request()
+        ("", "", "")
     };
 
     let (headers, body) = {
