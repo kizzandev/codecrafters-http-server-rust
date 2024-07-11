@@ -59,14 +59,20 @@ fn get_request(mut stream: &TcpStream) -> Request {
 
     let mut lines = request_str.lines();
 
-    let (method, uri, version) = {
-        let mut req_line = lines.next().unwrap().split(' ');
-        (req_line.next().unwrap(), req_line.next().unwrap(), req_line.next().unwrap())
+    let (method, uri, version) = if let Some(req_line) = lines.next() {
+        let mut parts = req_line.split(' ');
+        if let (Some(method), Some(uri), Some(version)) = (parts.next(), parts.next(), parts.next()) {
+            (method, uri, version)
+        } else {
+            default_request()
+        }
+    } else {
+        default_request()
     };
 
     let (headers, body) = {
         let mut req_parts = request_str.split("\r\n\r\n");
-        (req_parts.next().unwrap(), req_parts.next().unwrap_or(""))
+        (req_parts.next().unwrap_or(""), req_parts.next().unwrap_or(""))
     };
 
     let headers = headers.lines().skip(1).collect::<Vec<&str>>().join("\r\n");
