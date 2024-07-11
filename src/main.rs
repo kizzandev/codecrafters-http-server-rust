@@ -39,7 +39,7 @@ fn handle_header(response: &mut Response, header: &str) {
 fn get_header(request: &Request, header: &str) -> String {
     if request.headers.contains("\r\n") {
         let headers = request.headers.split("\r\n").collect::<Vec<&str>>();
-        headers.iter().find(|&x| x.contains(header))?.unwrap().split(':').collect::<Vec<&str>>()[1].trim().to_string()
+        headers.iter().find(|&x| x.contains(header)).unwrap().split(':').collect::<Vec<&str>>()[1].trim().to_string()
     } else if request.headers.contains(header) {
         request.headers.split(':').collect::<Vec<&str>>()[1].trim().to_string()
     } else {
