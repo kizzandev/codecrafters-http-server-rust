@@ -21,8 +21,9 @@ struct Request {
 }
 
 fn handle_header(response: &mut Response, header: &str) {
+    let header_key = header.split(':').collect::<Vec<&str>>()[0].trim();
     let mut headers = response.headers.split("\r\n")
-                                       .filter(|&x| x != header)
+                                       .filter(|&x| !x.starts_with(header_key))
                                        .collect::<Vec<&str>>();
 
     response.headers = headers.join("\r\n");
