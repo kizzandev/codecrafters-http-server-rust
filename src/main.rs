@@ -43,7 +43,7 @@ fn get_header(request: &Request, header: &str) -> String {
             return h.split(':').nth(1).map_or("".to_string(), |v| v.trim().to_string());
         }
     } else if request.headers.contains(header) {
-        request.headers.split(':').nth(1).map_or("".to_string(), |x| x.trim().to_string())
+        return request.headers.split(':').nth(1).map_or("".to_string(), |v| v.trim().to_string());
     } else {
         "".to_string()
     }
